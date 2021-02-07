@@ -62,6 +62,7 @@ let end_date = moment(end).toDate();
 let by_till = 0;
 let by_user = 0;
 let by_status = 1;
+let All_Ingredients = [];
 
 $(function () {
   function cb(start, end) {
@@ -204,6 +205,22 @@ if (auth == undefined) {
       $(".p_five").hide();
     }
 
+    // Loading Ingredients
+
+    $("#rawMaterial").on("click", function loadIngredients() {
+      $.get(api + "ingredients/showIngredients", function (data) {
+        // data.forEach((item) => {
+        //   console.log(item);
+        // });
+
+        All_Ingredients = [...data];
+        console.log(All_Ingredients);
+        // console.log("helloo");
+
+        // loadProductList();
+      });
+    });
+
     function loadProducts() {
       $.get(api + "inventory/products", function (data) {
         data.forEach((item) => {
@@ -211,8 +228,6 @@ if (auth == undefined) {
         });
 
         allProducts = [...data];
-
-        console.log(data); // To debug
 
         loadProductList();
 
@@ -1163,10 +1178,13 @@ if (auth == undefined) {
     $("#saveIngredient").on("submit", function (e) {
       e.preventDefault();
 
+      // myId = Math.floor(Date.now() / 1000);
+
       // $(this).attr("action", api + "ingredients/save");
       // $(this).attr("method", "POST");
 
       let myData = {
+        // id: myId,
         name: $("#ingredientName").val(),
         unitType: $("#quantityType").val(),
         stock: $("#stockQuantity").val(),

@@ -25,11 +25,12 @@ app.get("/", function (req, res) {
   res.send("Ingredient API");
 });
 
-// app.get("/ingredient", function (req, res) {
-//   ingredientDB.find({}, function (err, docs) {
-//     res.send(docs);
-//   });
-// });
+app.get("/showIngredients", function (req, res) {
+  ingredientDB.find({}, function (err, docs) {
+    console.log(docs);
+    res.send(docs);
+  });
+});
 
 // app.get("/save", function (req, res) {
 //   let myData = req.body;
@@ -41,27 +42,24 @@ app.get("/", function (req, res) {
 //   app.post("/ingredient", upload.single("imagename"), function (req, res) {
 
 app.post("/save", function (req, res) {
-  console.log(req.body);
   //   console.log(req.is("json"));
 
   let Ingredient = {
-    _id: parseInt(req.body.id),
-
-    // quantity: req.body.quantity == "" ? 0 : req.body.quantity,
+    // _id: parseInt(req.body.id),
     name: req.body.name,
     unitType: req.body.unitType,
-    stock: req.body.stock == "on" ? 0 : 1,
+    stock: req.body.stock,
   };
 
-  //   console.log(Ingredient);
+  console.log(req.body);
 
   ingredientDB.insert(Ingredient, function (err, ingredient) {
     if (err) res.status(500).send(err);
     else res.send(ingredient);
   });
 
-  //   if (req.body.id == "") {
-  //     Ingredient._id = Math.floor(Date.now() / 1000);
+  //   if (req.body._id == "") {
+  //     // Ingredient._id = Math.floor(Date.now() / 1000);
   //     ingredientDB.insert(Ingredient, function (err, ingredient) {
   //       if (err) res.status(500).send(err);
   //       else res.send(ingredient);

@@ -63,6 +63,7 @@ let by_till = 0;
 let by_user = 0;
 let by_status = 1;
 let All_Ingredients = [];
+// let ingredientList = [];
 
 $(function () {
   function cb(start, end) {
@@ -209,17 +210,125 @@ if (auth == undefined) {
 
     $("#rawMaterial").on("click", function loadIngredients() {
       $.get(api + "ingredients/showIngredients", function (data) {
-        // data.forEach((item) => {
-        //   console.log(item);
-        // });
-
         All_Ingredients = [...data];
+        loadIngredientsList(All_Ingredients);
         console.log(All_Ingredients);
-        // console.log("helloo");
-
-        // loadProductList();
       });
     });
+
+    // Showing Ingredients to Ingredient Window
+
+    function loadIngredientsList(data) {
+      // console.log(data);
+      let ingredientList = "";
+
+      data.forEach((singleData, index) => {
+        // console.log(singleData);
+        ingredientList += `<tr>
+        <td></td>
+        <td>${singleData.name}</td>
+        <td>${singleData.unitType}</td>
+        <td>${singleData.stock}</td>
+        <td class="nobr"><span class="btn-group"><button onClick="$(this).editIngredient(${index})" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteIngredient('${singleData._id}')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></span></td></tr>`;
+
+        $("#ingredient_list").html(ingredientList);
+      });
+
+      // product code
+
+      //   let products = [...allProducts];
+      //   let product_list = "";
+      //   let counter = 0;
+      //   $("#product_list").empty();
+      //   $("#productList").DataTable().destroy();
+
+      //   products.forEach((product, index) => {
+      //     counter++;
+
+      //     let category = allCategories.filter(function (category) {
+      //       return category._id == product.category;
+      //     });
+
+      //     product_list +=
+      //       `<tr>
+      //         <td><img id="` +
+      //       product._id +
+      //       `"></td>
+      //         <td><img style="max-height: 50px; max-width: 50px; border: 1px solid #ddd;" src="${
+      //           product.img == ""
+      //             ? "./assets/images/default.jpg"
+      //             : img_path + product.img
+      //         }" id="product_img"></td>
+      //         <td>${product.name}</td>
+      //         <td>${settings.symbol}${product.price}</td>
+      //         <td>${product.stock == 1 ? product.quantity : "N/A"}</td>
+      //         <td>${category.length > 0 ? category[0].name : ""}</td>
+      //         <td class="nobr"><span class="btn-group"><button onClick="$(this).editProduct(${index})" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteProduct(${
+      //         product._id
+      //       })" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></span></td></tr>`;
+
+      //     if (counter == allProducts.length) {
+      //       $("#product_list").html(product_list);
+
+      //       products.forEach((pro) => {
+      //         $("#" + pro._id + "").JsBarcode(pro._id, {
+      //           width: 2,
+      //           height: 25,
+      //           fontSize: 14,
+      //         });
+      //       });
+
+      //       $("#productList").DataTable({
+      //         order: [[1, "desc"]],
+      //         autoWidth: false,
+      //         info: true,
+      //         JQueryUI: true,
+      //         ordering: true,
+      //         paging: false,
+      //       });
+      //     }
+      // });
+    }
+
+    $.fn.editIngredient = function (index) {
+      $("#rawMaterialView").modal("hide");
+
+      $("#ingredientName").val(All_Ingredients[index].name);
+      $("#quantityType").val(All_Ingredients[index].unitType);
+      $("#stockQuantity").val(All_Ingredients[index].stock);
+      $("#raw_id").val(All_Ingredients[index]._id);
+
+      // if (All_Ingredients[index].stock == 0) {
+      //   $("#stock").prop("checked", true);
+      // }
+
+      $("#addRawMaterial").modal("show");
+    };
+
+    $.fn.deleteIngredient = function (id) {
+      console.log(id);
+
+      // Swal.fire({
+      //   title: "Are you sure?",
+      //   text: "You are about to delete this product.",
+      //   icon: "warning",
+      //   showCancelButton: true,
+      //   confirmButtonColor: "#3085d6",
+      //   cancelButtonColor: "#d33",
+      //   confirmButtonText: "Yes, delete it!",
+      // }).then((result) => {
+      //   if (result.value) {
+      //     $.ajax({
+      //       url: api + "inventory/product/" + id,
+      //       type: "DELETE",
+      //       success: function (result) {
+      //         loadProducts();
+      //         Swal.fire("Done!", "Product deleted", "success");
+      //       },
+      //     });
+      //   }
+      // });
+    };
 
     function loadProducts() {
       $.get(api + "inventory/products", function (data) {
@@ -1173,7 +1282,7 @@ if (auth == undefined) {
       });
     });
 
-    // Ingredient Logic
+    // Start: Ingredient Logic
 
     $("#saveIngredient").on("submit", function (e) {
       e.preventDefault();
@@ -1183,54 +1292,14 @@ if (auth == undefined) {
       // $(this).attr("action", api + "ingredients/save");
       // $(this).attr("method", "POST");
 
-      let myData = {
-        // id: myId,
-        name: $("#ingredientName").val(),
-        unitType: $("#quantityType").val(),
-        stock: $("#stockQuantity").val(),
-      };
-
-      $.ajax({
-        url: api + "ingredients/save",
-        type: "POST",
-        data: JSON.stringify(myData),
-        contentType: "application/json; charset=utf-8",
-        cache: false,
-        processData: false,
-        success: function (data) {
-          $("#newCustomer").modal("hide");
-          Swal.fire(
-            "Customer added!",
-            "Customer added successfully!",
-            "success"
-          );
-          $("#customer option:selected").removeAttr("selected");
-          $("#customer").append(
-            $("<option>", {
-              text: custData.name,
-              value: `{"id": ${custData._id}, "name": ${custData.name}}`,
-              selected: "selected",
-            })
-          );
-
-          $("#customer")
-            .val(`{"id": ${custData._id}, "name": ${custData.name}}`)
-            .trigger("chosen:updated");
-        },
-        error: function (data) {
-          $("#newCustomer").modal("hide");
-          Swal.fire("Error", "Something went wrong please try again", "error");
-        },
-      });
-
       // $(this).ajaxSubmit({
-      //   contentType: "application/json",
-      //   data:
+      //   contentType: "application/json; charset=utf-8",
+      //   // data:
       //   success: function (response) {
-      //     $("#saveIngredient").get(0).reset();
-      //     $("#current_img").text("");
+      // $("#saveIngredient").get(0).reset();
+      // $("#current_img").text("");
 
-      //     // loadProducts();
+      // loadProducts();
       //     Swal.fire({
       //       title: "Ingredient Saved",
       //       text: "Select an option below to continue.",
@@ -1250,7 +1319,38 @@ if (auth == undefined) {
       //     console.log(data);
       //   },
       // });
+
+      let myData = {
+        id: null,
+        name: $("#ingredientName").val(),
+        unitType: $("#quantityType").val(),
+        stock: $("#stockQuantity").val(),
+      };
+
+      $.ajax({
+        url: api + "ingredients/save",
+        type: "POST",
+        data: JSON.stringify(myData),
+        contentType: "application/json; charset=utf-8",
+        // cache: false,
+        // processData: false,
+        success: function (data) {
+          $("#addRawMaterial").modal("hide");
+          Swal.fire(
+            "Ingredient added!",
+            "Ingredient added successfully!",
+            "success"
+          );
+        },
+        error: function (data) {
+          $("#newCustomer").modal("hide");
+          Swal.fire("Error", "Something went wrong please try again", "error");
+        },
+      });
+      // $("#addRawMaterial").get(0).reset();
     });
+
+    // End
 
     $("#saveCategory").submit(function (e) {
       e.preventDefault();

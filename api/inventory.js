@@ -76,6 +76,8 @@ app.post("/product", upload.single("imagename"), function (req, res) {
     }
   }
 
+  console.log(req.body);
+
   let Product = {
     _id: parseInt(req.body.id),
     price: req.body.price,

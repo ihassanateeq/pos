@@ -42,39 +42,37 @@ app.get("/showIngredients", function (req, res) {
 //   app.post("/ingredient", upload.single("imagename"), function (req, res) {
 
 app.post("/save", function (req, res) {
-  //   console.log(req.is("json"));
-
   let Ingredient = {
-    // _id: parseInt(req.body.id),
+    _id: parseInt(req.body.id),
     name: req.body.name,
     unitType: req.body.unitType,
     stock: req.body.stock,
   };
 
-  console.log(req.body);
+  console.log(req.body.id);
 
-  ingredientDB.insert(Ingredient, function (err, ingredient) {
-    if (err) res.status(500).send(err);
-    else res.send(ingredient);
-  });
+  // ingredientDB.insert(Ingredient, function (err, ingredient) {
+  //   if (err) res.status(500).send(err);
+  //   else res.send(ingredient);
+  // });
 
-  //   if (req.body._id == "") {
-  //     // Ingredient._id = Math.floor(Date.now() / 1000);
-  //     ingredientDB.insert(Ingredient, function (err, ingredient) {
-  //       if (err) res.status(500).send(err);
-  //       else res.send(ingredient);
-  //     });
-  //   } else {
-  //     ingredientDB.update(
-  //       {
-  //         _id: parseInt(req.body.id),
-  //       },
-  //       Ingredient,
-  //       {},
-  //       function (err, numReplaced, ingredient) {
-  //         if (err) res.status(500).send(err);
-  //         else res.sendStatus(200);
-  //       }
-  //     );
-  //   }
+  if (req.body.id == "") {
+    Ingredient._id = Math.floor(Date.now() / 1000);
+    ingredientDB.insert(Ingredient, function (err, ingredient) {
+      if (err) res.status(500).send(err);
+      else res.send(ingredient);
+    });
+  } else {
+    ingredientDB.update(
+      {
+        _id: parseInt(req.body.id),
+      },
+      Ingredient,
+      {},
+      function (err, numReplaced, ingredient) {
+        if (err) res.status(500).send(err);
+        else res.sendStatus(200);
+      }
+    );
+  }
 });

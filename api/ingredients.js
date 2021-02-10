@@ -50,6 +50,7 @@ app.post("/save", function (req, res) {
   };
 
   console.log(req.body.id);
+  console.log(req.body.name);
 
   // ingredientDB.insert(Ingredient, function (err, ingredient) {
   //   if (err) res.status(500).send(err);

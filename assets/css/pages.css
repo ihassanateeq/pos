@@ -14,10 +14,12 @@
 }
 
 #parent { 
-  display: block; 
+  /* display: block;  */
+  display: inline-flex;
+  flex-wrap: wrap;
   height: calc(100vh - 215px);
   overflow: auto;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 

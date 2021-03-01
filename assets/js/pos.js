@@ -210,6 +210,7 @@ if (auth == undefined) {
 
     $("#rawMaterial").on("click", function loadIngredients() {
       $.get(api + "ingredients/showIngredients", function (data) {
+        console.log(...data);
         All_Ingredients = [...data];
         loadIngredientsList(All_Ingredients);
         console.log(All_Ingredients);
@@ -1321,7 +1322,7 @@ if (auth == undefined) {
       // });
 
       let myData = {
-        id: null,
+        id: $("#raw_id").val(),
         name: $("#ingredientName").val(),
         unitType: $("#quantityType").val(),
         stock: $("#stockQuantity").val(),
@@ -1337,13 +1338,13 @@ if (auth == undefined) {
         success: function (data) {
           $("#addRawMaterial").modal("hide");
           Swal.fire(
-            "Ingredient added!",
-            "Ingredient added successfully!",
+            "Ingredient Saved!",
+            "Ingredient saved successfully!",
             "success"
           );
         },
         error: function (data) {
-          $("#newCustomer").modal("hide");
+          $("#addRawMaterial").modal("hide");
           Swal.fire("Error", "Something went wrong please try again", "error");
         },
       });

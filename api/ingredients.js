@@ -25,9 +25,24 @@ app.get("/", function (req, res) {
   res.send("Ingredient API");
 });
 
+app.get("/ingredient/:ingredientId", function (req, res) {
+  if (!req.params.ingredientId) {
+    res.status(500).send("ID field is required.");
+  } else {
+    inventoryDB.findOne(
+      {
+        _id: parseInt(req.params.ingredientId),
+      },
+      function (err, ingredient) {
+        res.send(ingredient);
+      }
+    );
+  }
+});
+
 app.get("/showIngredients", function (req, res) {
   ingredientDB.find({}, function (err, docs) {
-    console.log(docs);
+    // console.log(docs);
     res.send(docs);
   });
 });

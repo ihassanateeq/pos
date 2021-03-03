@@ -92,3 +92,15 @@ app.post("/save", function (req, res) {
     );
   }
 });
+
+app.delete("/ingredient/:ingredientId", function (req, res) {
+  ingredientDB.remove(
+    {
+      _id: parseInt(req.params.ingredientId),
+    },
+    function (err, numRemoved) {
+      if (err) res.status(500).send(err);
+      else res.sendStatus(200);
+    }
+  );
+});

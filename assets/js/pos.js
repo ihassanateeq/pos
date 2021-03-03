@@ -208,14 +208,16 @@ if (auth == undefined) {
 
     // Loading Ingredients
 
-    $("#rawMaterial").on("click", function loadIngredients() {
+    function loadIngredients() {
       $.get(api + "ingredients/showIngredients", function (data) {
         console.log(...data);
         All_Ingredients = [...data];
         loadIngredientsList(All_Ingredients);
         console.log(All_Ingredients);
       });
-    });
+    }
+
+    $("#rawMaterial").on("click", loadIngredients());
 
     // Showing Ingredients to Ingredient Window
 
@@ -309,26 +311,26 @@ if (auth == undefined) {
     $.fn.deleteIngredient = function (id) {
       console.log(id);
 
-      // Swal.fire({
-      //   title: "Are you sure?",
-      //   text: "You are about to delete this product.",
-      //   icon: "warning",
-      //   showCancelButton: true,
-      //   confirmButtonColor: "#3085d6",
-      //   cancelButtonColor: "#d33",
-      //   confirmButtonText: "Yes, delete it!",
-      // }).then((result) => {
-      //   if (result.value) {
-      //     $.ajax({
-      //       url: api + "inventory/product/" + id,
-      //       type: "DELETE",
-      //       success: function (result) {
-      //         loadProducts();
-      //         Swal.fire("Done!", "Product deleted", "success");
-      //       },
-      //     });
-      //   }
-      // });
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are about to delete this ingredient.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.value) {
+          $.ajax({
+            url: api + "ingredients/ingredient/" + id,
+            type: "DELETE",
+            success: function (result) {
+              loadIngredients();
+              Swal.fire("Done!", "Ingredient deleted", "success");
+            },
+          });
+        }
+      });
     };
 
     function loadProducts() {
